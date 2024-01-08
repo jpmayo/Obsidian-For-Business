@@ -89,7 +89,7 @@ Sub GetAttendeeList(meetingType As String)
       ' For `REQUIRED` Attendee's Separate them out
       If objAttendees(x).Type = olRequired Then
           ' Format Names of attendees correctly
-            attendeeName = formatName(objAttendees(x).name, personNameStartChar)
+            attendeeName = formatName(objAttendees(x).Name, personNameStartChar)
           ' Building a long formatted string with records that look like:
           ' - [[@Bryan Jenks]]\n
           objAttendeeReq = objAttendeeReq & vbTab
@@ -98,7 +98,7 @@ Sub GetAttendeeList(meetingType As String)
           objAttendeeReq = objAttendeeReq & vbCrLf
       Else ' For `OPTIONAL` Attendee's Separate them out
           ' Format optional Attendee names
-          attendeeName = formatName(objAttendees(x).name, personNameStartChar)
+          attendeeName = formatName(objAttendees(x).Name, personNameStartChar)
 
           objAttendeeOpt = objAttendeeOpt & vbTab
           objAttendeeOpt = objAttendeeOpt & "- "
@@ -158,8 +158,9 @@ Sub GetAttendeeList(meetingType As String)
     Dim fileName As String
     fileName = fileNameStartChr & Format(dtStart, "yyyy-mm-dd hhMM") & " " & strSubject & ".md"
 
-    ListAttendees.SaveAs vaultPathToSaveFileTo & fileName, OLTXT
-
+    ' ListAttendees.SaveAs vaultPathToSaveFileTo & fileName, OLTXT
+    ' Save the file with UTF-8 encoding
+    SaveFileUTF8 vaultPathToSaveFileTo, fileName, strCopyData
 
     ' Tidy up and shut the door
 EndClean:
@@ -168,6 +169,26 @@ EndClean:
     Set objAttendees = Nothing
 End Sub
 
+Sub SaveFileUTF8(folderPath As String, fileName As String, content As String)
+    Dim adodbStream As Object
+    Set adodbStream = CreateObject("ADODB.Stream")
+
+    ' Specify that the stream will write text data with UTF-8 encoding
+    adodbStream.Charset = "UTF-8"
+    adodbStream.Mode = 3 ' adModeReadWrite
+
+    ' Open the stream
+    adodbStream.Open
+
+    ' Write the content to the stream
+    adodbStream.WriteText content
+
+    ' Save the stream to the file
+    adodbStream.SaveToFile folderPath & fileName, 2 ' adSaveCreateOverWrite
+
+    ' Close the stream
+    adodbStream.Close
+End Sub
 Sub ExtractMeeting()
     GetAttendeeList "Meeting"
 End Sub
