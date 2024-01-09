@@ -55,7 +55,7 @@ Sub ExtractEmail()
         For Each recip In recips
             recipString = recipString & vbTab
             recipString = recipString & "- "
-            recipString = recipString & formatName(recip.name, personNameStartChar)
+            recipString = recipString & formatName(recip.Name, personNameStartChar)
             recipString = recipString & vbCrLf
         Next
         ' Build the result file content to be sent to the mail item body
@@ -104,11 +104,34 @@ Sub ExtractEmail()
         fileName = fileName & " " & temporarySubjectLineString & ".md"
 
         ' Save the result
-        outputItem.SaveAs vaultPathToSaveFileTo & fileName, OLTXT
+        ' outputItem.SaveAs vaultPathToSaveFileTo & fileName, OLTXT
+        ' Save the file with UTF-8 encoding
+        SaveFileUTF8 vaultPathToSaveFileTo, fileName, resultString
 
     Next
 EndClean:
     Set obj = Nothing
     Set oMail = Nothing
     Set outputItem = Nothing
+End Sub
+
+Sub SaveFileUTF8(folderPath As String, fileName As String, content As String)
+    Dim adodbStream As Object
+    Set adodbStream = CreateObject("ADODB.Stream")
+
+    ' Specify that the stream will write text data with UTF-8 encoding
+    adodbStream.Charset = "UTF-8"
+    adodbStream.Mode = 3 ' adModeReadWrite
+
+    ' Open the stream
+    adodbStream.Open
+
+    ' Write the content to the stream
+    adodbStream.WriteText content
+
+    ' Save the stream to the file
+    adodbStream.SaveToFile folderPath & fileName, 2 ' adSaveCreateOverWrite
+
+    ' Close the stream
+    adodbStream.Close
 End Sub
