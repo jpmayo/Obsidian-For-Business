@@ -112,43 +112,26 @@ Sub GetAttendeeList(meetingType As String)
     ' Begin building the final plain text report out
 
     strCopyData = ""
+    
+    ' Add frontmatter attributes
+    strCopyData = strCopyData & "---" & vbCrLf
+    strCopyData = strCopyData & "type: meeting" & vbCrLf
+    strCopyData = strCopyData & "tags: " & vbCrLf
+    strCopyData = strCopyData & "organizer: " & Chr(34) & formatName(objOrganizer, personNameStartChar) & Chr(34) & vbCrLf
+    strCopyData = strCopyData & "location: " & strLocation & vbCrLf
+    strCopyData = strCopyData & "start: " & Format(dtStart, "yyyy-MM-dd HH:MM:ss") & vbCrLf
+    strCopyData = strCopyData & "end: " & Format(dtEnd, "yyyy-MM-dd HH:MM:ss") & vbCrLf
+    strCopyData = strCopyData & "required: " & vbCrLf & objAttendeeReq
+    strCopyData = strCopyData & "optional: " & vbCrLf & objAttendeeOpt
+    strCopyData = strCopyData & "---" & vbCrLf
+
     strCopyData = strCopyData & "# [[" & fileNameStartChr & Format(dtStart, "yyyy-mm-dd hhMM") & " " & strSubject & "|" & strSubject & "]]"
-    strCopyData = strCopyData & vbCrLf & vbCrLf & vbCrLf
-
-    strCopyData = strCopyData & "- `Organizer:` " & formatName(objOrganizer, personNameStartChar)
-    strCopyData = strCopyData & vbCrLf
-
-    strCopyData = strCopyData & "- `Location:` " & "[[" & strLocation & "]]"
-    strCopyData = strCopyData & vbCrLf
-
-   strCopyData = strCopyData & "- `Start:` "
-    strCopyData = strCopyData & "[[" & Format(dtStart, "yyyy-mm-dd") & "]] " & Format(dtStart, "hh:MM:ss AM/PM")
-    strCopyData = strCopyData & vbCrLf
-
-    strCopyData = strCopyData & "- `End:` "
-    strCopyData = strCopyData & "[[" & Format(dtEnd, "yyyy-mm-dd") & "]] " & Format(dtEnd, "hh:MM:ss AM/PM")
     strCopyData = strCopyData & vbCrLf & vbCrLf
 
-
-    strCopyData = strCopyData & "- `Type:` " & typeLink
-    strCopyData = strCopyData & vbCrLf & vbCrLf
-
-
-   strCopyData = strCopyData & "- `Required:` "
-    strCopyData = strCopyData & vbCrLf
-    strCopyData = strCopyData & objAttendeeReq
-    strCopyData = strCopyData & vbCrLf
-
-    strCopyData = strCopyData & "- `Optional:` "
-    strCopyData = strCopyData & vbCrLf
-    strCopyData = strCopyData & objAttendeeOpt
-    strCopyData = strCopyData & vbCrLf & vbCrLf
-
-    strCopyData = strCopyData & "#### NOTES "
-    strCopyData = strCopyData & vbCrLf & vbCrLf
-    strCopyData = strCopyData & vbCrLf
+    strCopyData = strCopyData & "## Notes " & vbCrLf & vbCrLf & vbCrLf
+    strCopyData = strCopyData & "## Actions " & vbCrLf & vbCrLf & vbCrLf
+    strCopyData = strCopyData & "## Original %% fold %% " & vbCrLf & vbCrLf
     strCopyData = strCopyData & strNotes
-
 
     Const OLTXT = 0
 
